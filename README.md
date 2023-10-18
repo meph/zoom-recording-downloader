@@ -14,7 +14,7 @@ _Attention: You will need [Python 3.6](https://www.python.org/downloads/) or gre
 ```sh
 $ git clone https://github.com/ricardorodrigues-ca/zoom-recording-downloader
 $ cd zoom-recording-downloader
-$ pip3 install -r requirements.txt
+$ docker build -t zoom-recording-downloader .
 ```
 
 ## Usage ##
@@ -49,5 +49,6 @@ _Attention: You will need a [Zoom Developer account](https://marketplace.zoom.us
 Run command:
 
 ```sh
-python3 zoom-recording-downloader.py
+docker run --rm -v ./zoom-recording-downloader.conf:/app
+/zoom-recoding-downloader.conf -v ~/Downloads/zoom_downloader:/downloads zoom-recording-downloader
 ```
