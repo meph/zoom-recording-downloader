@@ -4,3 +4,4 @@ pathvalidate
 python-dateutil
 requests
 tqdm
+pytz

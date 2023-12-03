@@ -1,3 +1,4 @@
+# 1. Base image
 FROM python:3.9-slim
 
 WORKDIR /app
@@ -5,7 +6,7 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY zoom-recording-downloader.py .
 
 RUN chmod +x /app/zoom-recording-downloader.py
 

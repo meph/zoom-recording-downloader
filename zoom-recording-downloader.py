@@ -24,6 +24,7 @@ import dateutil.parser as parser
 import pathvalidate as path_validate
 import requests
 import tqdm as progress_bar
+import pytz
 
 CONF_PATH = "zoom-recording-downloader.conf"
 with open(CONF_PATH, encoding="utf-8-sig") as json_file:
@@ -41,8 +42,9 @@ RECORDING_START_YEAR = datetime.date.today().year
 RECORDING_START_MONTH = 1
 RECORDING_START_DAY = 1
 RECORDING_END_DATE = datetime.date.today()
-DOWNLOAD_DIRECTORY = 'downloads'
-COMPLETED_MEETING_IDS_LOG = 'completed-downloads.log'
+RECORDING_TIMEZONE = CONF["Recording"]["timezone"] 
+DOWNLOAD_DIRECTORY = CONF["Recording"]["download_directory"] # '/downloads'
+COMPLETED_MEETING_IDS_LOG = CONF["Recording"]["completed_meeting_ids_log"] #'/downloads/completed-downloads.log'
 COMPLETED_MEETING_IDS = set()
 
 
@@ -135,10 +137,13 @@ def format_filename(params):
     invalid_chars_pattern = r'[<>:"/\\|?*\x00-\x1F]'
     topic = regex.sub(invalid_chars_pattern, '', recording["topic"])
     rec_type = recording_type.replace("_", " ").title()
-    meeting_time = parser.parse(recording["start_time"]).strftime("%Y.%m.%d - %I.%M %p UTC")
-
+    tz = pytz.timezone(RECORDING_TIMEZONE)
+    rec_start_time = parser.parse(recording["start_time"])
+    target_tz_time = rec_start_time.astimezone(tz)
+    meeting_time = target_tz_time.strftime("%Y-%m-%d - %H:%M")
+    
     return (
-        f"{meeting_time} - {topic} - {rec_type} - {recording_id}.{file_extension.lower()}",
+        f"{meeting_time} {RECORDING_TIMEZONE}- {topic} - {rec_type} - {recording_id}.{file_extension.lower()}",
         f"{topic} - {meeting_time}"
     )
 
